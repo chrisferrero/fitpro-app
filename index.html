@@ -128,9 +128,81 @@
     .macro-p { background:#F97316; border-radius:999px; }
     .macro-c { background:#60A5FA; border-radius:999px; }
     .macro-f { background:#A78BFA; border-radius:999px; }
+
+    /* Weight card */
+    .weight-card { cursor:pointer; position:relative; }
+    .weight-card:hover { border-color:#F97316 !important; box-shadow:0 4px 16px rgba(249,115,22,.2); }
+    .weight-edit-icon { position:absolute;top:6px;right:6px;opacity:0;transition:opacity 200ms; }
+    .weight-card:hover .weight-edit-icon { opacity:1; }
+
+    /* Monthly alert banner */
+    @keyframes slideDown { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
+    #weight-alert { animation:slideDown .35s ease; }
+
+    /* Weight history dot */
+    .hist-dot { width:8px;height:8px;border-radius:50%;background:#F97316;flex-shrink:0;margin-top:5px; }
+    .hist-line { width:2px;background:#374151;margin:0 3px;flex:1; }
   </style>
 </head>
 <body>
+
+<!-- ALERTE MENSUELLE MISE À JOUR DU POIDS -->
+<div id="weight-alert" style="display:none;background:linear-gradient(90deg,rgba(249,115,22,.15),rgba(249,115,22,.05));border-bottom:2px solid #F97316;padding:14px 20px;">
+  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <div style="width:38px;height:38px;background:rgba(249,115,22,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" width="20" height="20"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;">Il est temps de mettre à jour ton poids !</div>
+      <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;" id="alert-subtitle">Ça fait plus d'un mois — prends 30 secondes pour suivre ta progression.</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-shrink:0;">
+      <button onclick="openWeightModal(); dismissAlert()" style="background:#F97316;border:none;border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;color:white;transition:background 200ms;" onmouseover="this.style.background='#EA6A07'" onmouseout="this.style.background='#F97316'">Mettre à jour</button>
+      <button onclick="dismissAlert()" style="background:#1F2937;border:1px solid #374151;border-radius:10px;padding:9px 16px;cursor:pointer;color:#9CA3AF;font-size:.85rem;transition:all 200ms;" onmouseover="this.style.borderColor='#6B7280'" onmouseout="this.style.borderColor='#374151'">Plus tard</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE POIDS -->
+<div id="weight-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:55;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);" onclick="closeWeightModal(event)">
+  <div style="background:#1F2937;border:1px solid #374151;border-radius:20px;max-width:420px;width:100%;overflow:hidden;" onclick="event.stopPropagation()">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,rgba(249,115,22,.15),transparent);padding:24px 24px 20px;border-bottom:1px solid #374151;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;text-transform:uppercase;">Mon Poids</div>
+        <div style="font-size:.85rem;color:#9CA3AF;margin-top:4px;">Suivi de progression mensuel</div>
+      </div>
+      <button onclick="document.getElementById('weight-modal-overlay').style.display='none'" style="background:#374151;border:none;border-radius:10px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" width="16" height="16"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Formulaire -->
+    <div style="padding:24px;">
+      <div style="margin-bottom:24px;">
+        <label style="display:block;font-size:.8rem;color:#9CA3AF;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Nouveau poids (kg)</label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input id="weight-input" type="number" step="0.1" min="40" max="200"
+            style="flex:1;background:#111827;border:2px solid #374151;border-radius:12px;padding:14px 16px;color:#F8FAFC;font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;outline:none;transition:border-color 200ms;text-align:center;"
+            onfocus="this.style.borderColor='#F97316'" onblur="this.style.borderColor='#374151'"
+            placeholder="83.5"
+          >
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;color:#6B7280;font-weight:600;">kg</span>
+        </div>
+        <!-- Diff vs poids précédent -->
+        <div id="weight-diff-preview" style="margin-top:10px;font-size:.85rem;text-align:center;color:#6B7280;min-height:20px;"></div>
+      </div>
+
+      <button onclick="saveWeight()" style="width:100%;background:linear-gradient(135deg,#F97316,#EA6A07);border:none;border-radius:12px;padding:14px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:.05em;transition:opacity 200ms;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+        Enregistrer
+      </button>
+
+      <!-- Historique -->
+      <div id="weight-history" style="margin-top:24px;"></div>
+    </div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -165,10 +237,17 @@
 
       <!-- Stats -->
       <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
-          <div class="stat-val">85<span style="font-size:1.2rem;color:#9CA3AF;">kg</span></div>
+
+        <!-- POIDS — éditable -->
+        <div class="card weight-card" onclick="openWeightModal()" style="padding:16px 20px;text-align:center;min-width:90px;border:1px solid #374151;border-radius:16px;transition:all 200ms;">
+          <div class="weight-edit-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="stat-val" id="weight-display">85<span style="font-size:1.2rem;color:#9CA3AF;">kg</span></div>
           <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">Poids</div>
+          <div id="weight-delta" style="font-size:.72rem;margin-top:4px;font-weight:600;display:none;"></div>
         </div>
+
         <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
           <div class="stat-val">175<span style="font-size:1.2rem;color:#9CA3AF;">cm</span></div>
           <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">Taille</div>
@@ -932,13 +1011,195 @@ function updateCountdown() {
   document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
 }
 
+// ===================== POIDS & HISTORIQUE =====================
+const HEIGHT_M = 1.75;
+const WEIGHT_KEY = 'fitpro_weight';
+
+function getWeightData() {
+  const raw = localStorage.getItem(WEIGHT_KEY);
+  if (!raw) return { current: 85, history: [], lastUpdated: null };
+  return JSON.parse(raw);
+}
+
+function saveWeightData(data) {
+  localStorage.setItem(WEIGHT_KEY, JSON.stringify(data));
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function daysBetween(dateStr) {
+  if (!dateStr) return 9999;
+  return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+}
+
+function refreshWeightDisplay() {
+  const data = getWeightData();
+  const w = data.current;
+  // Affichage carte
+  document.getElementById('weight-display').innerHTML =
+    `${w}<span style="font-size:1.2rem;color:#9CA3AF;">kg</span>`;
+  // Delta vs entrée précédente
+  const deltaEl = document.getElementById('weight-delta');
+  if (data.history.length >= 2) {
+    const prev = data.history[data.history.length - 2].weight;
+    const diff = +(w - prev).toFixed(1);
+    if (diff !== 0) {
+      deltaEl.style.display = 'block';
+      deltaEl.textContent = (diff > 0 ? '+' : '') + diff + ' kg';
+      deltaEl.style.color = diff < 0 ? '#22C55E' : '#F97316';
+    } else {
+      deltaEl.style.display = 'none';
+    }
+  } else {
+    deltaEl.style.display = 'none';
+  }
+  // IMC
+  const bmi = (w / (HEIGHT_M * HEIGHT_M)).toFixed(1);
+  document.getElementById('bmi-val').textContent = bmi;
+}
+
+function openWeightModal() {
+  const data = getWeightData();
+  // Pré-remplir l'input
+  const input = document.getElementById('weight-input');
+  input.value = data.current;
+  // Vider le preview diff
+  document.getElementById('weight-diff-preview').textContent = '';
+  // Mettre à jour preview en temps réel
+  input.oninput = () => {
+    const newW = parseFloat(input.value);
+    if (isNaN(newW) || newW <= 0) { document.getElementById('weight-diff-preview').textContent = ''; return; }
+    const diff = +(newW - data.current).toFixed(1);
+    if (diff === 0) {
+      document.getElementById('weight-diff-preview').innerHTML = '<span style="color:#6B7280;">Même poids qu\'avant</span>';
+    } else {
+      const sign = diff > 0 ? '+' : '';
+      const color = diff < 0 ? '#22C55E' : '#FB923C';
+      const msg = diff < 0 ? 'Bravo, tu as perdu du poids !' : 'Prise de poids enregistrée.';
+      document.getElementById('weight-diff-preview').innerHTML =
+        `<span style="color:${color};font-weight:600;">${sign}${diff} kg</span> — ${msg}`;
+    }
+  };
+  // Historique
+  renderWeightHistory(data);
+  // Afficher la modale
+  document.getElementById('weight-modal-overlay').style.display = 'flex';
+  setTimeout(() => input.focus(), 100);
+}
+
+function closeWeightModal(e) {
+  if (!e || e.target === document.getElementById('weight-modal-overlay')) {
+    document.getElementById('weight-modal-overlay').style.display = 'none';
+  }
+}
+
+function saveWeight() {
+  const input = document.getElementById('weight-input');
+  const newW = parseFloat(input.value);
+  if (isNaN(newW) || newW < 30 || newW > 300) {
+    input.style.borderColor = '#EF4444';
+    setTimeout(() => input.style.borderColor = '#374151', 1500);
+    return;
+  }
+  const data = getWeightData();
+  const today = new Date().toISOString().split('T')[0];
+  // Évite les doublons du même jour
+  if (data.history.length > 0 && data.history[data.history.length - 1].date === today) {
+    data.history[data.history.length - 1].weight = newW;
+  } else {
+    data.history.push({ weight: newW, date: today });
+  }
+  data.current = newW;
+  data.lastUpdated = today;
+  saveWeightData(data);
+  refreshWeightDisplay();
+  renderWeightHistory(data);
+  // Animation de succès sur le bouton
+  const btn = document.querySelector('#weight-modal-overlay button[onclick="saveWeight()"]');
+  if (btn) {
+    btn.textContent = 'Enregistré !';
+    btn.style.background = '#22C55E';
+    setTimeout(() => {
+      btn.textContent = 'Enregistrer';
+      btn.style.background = 'linear-gradient(135deg,#F97316,#EA6A07)';
+      document.getElementById('weight-modal-overlay').style.display = 'none';
+    }, 1400);
+  }
+}
+
+function renderWeightHistory(data) {
+  const el = document.getElementById('weight-history');
+  if (!data.history || data.history.length === 0) { el.innerHTML = ''; return; }
+  const sorted = [...data.history].reverse().slice(0, 8);
+  const max = Math.max(...sorted.map(h => h.weight));
+  const min = Math.min(...sorted.map(h => h.weight));
+  const range = max - min || 1;
+
+  el.innerHTML = `
+    <div style="font-size:.75rem;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Historique</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      ${sorted.map((h, i) => {
+        const prev = sorted[i + 1];
+        const diff = prev ? +(h.weight - prev.weight).toFixed(1) : null;
+        const barPct = Math.round(((h.weight - min) / range) * 100);
+        const isLatest = i === 0;
+        return `
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:.78rem;color:#6B7280;min-width:90px;flex-shrink:0;">${formatDate(h.date)}</div>
+            <div style="flex:1;background:#374151;border-radius:999px;height:6px;overflow:hidden;">
+              <div style="height:6px;border-radius:999px;background:${isLatest ? '#F97316' : '#4B5563'};width:${Math.max(barPct, 4)}%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:${isLatest ? '#F97316' : '#9CA3AF'};min-width:48px;text-align:right;">${h.weight} kg</div>
+            <div style="min-width:44px;text-align:right;font-size:.75rem;font-weight:600;">
+              ${diff !== null ? `<span style="color:${diff < 0 ? '#22C55E' : diff > 0 ? '#FB923C' : '#6B7280'}">${diff < 0 ? '' : diff > 0 ? '+' : ''}${diff !== 0 ? diff + 'kg' : '='}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+// Vérification alerte mensuelle
+function checkMonthlyAlert() {
+  const data = getWeightData();
+  const days = daysBetween(data.lastUpdated);
+  const alertEl = document.getElementById('weight-alert');
+  if (days >= 30) {
+    if (days === 9999) {
+      document.getElementById('alert-subtitle').textContent =
+        'Tu n\'as pas encore enregistré ton poids — commence le suivi dès maintenant !';
+    } else {
+      document.getElementById('alert-subtitle').textContent =
+        `Dernière mise à jour il y a ${days} jours. Prends 30 secondes pour suivre ta progression.`;
+    }
+    alertEl.style.display = 'block';
+  }
+}
+
+function dismissAlert() {
+  document.getElementById('weight-alert').style.display = 'none';
+}
+
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
   renderNutrition();
   updateCountdown();
   setInterval(updateCountdown, 1000);
-  // Keyboard close modal
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  // Poids
+  refreshWeightDisplay();
+  checkMonthlyAlert();
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal();
+      document.getElementById('weight-modal-overlay').style.display = 'none';
+    }
+  });
 });
 
 // ===================== SERVICE WORKER =====================
