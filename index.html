@@ -566,7 +566,7 @@ const weekDays = [
   { short:'SAM', type:'workout', label:'PULL', time:'11h00' },
   { short:'DIM', type:'workout', label:'LEGS', time:'11h00' },
 ];
-const todayIdx = (new Date('2026-05-25').getDay() + 6) % 7;
+const todayIdx = (new Date().getDay() + 6) % 7; // Lun=0 … Dim=6, dynamique
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('week-days');
   weekDays.forEach((d, i) => {
@@ -632,7 +632,7 @@ const sessions = {
 };
 
 const nutritionData = [
-  { day:'Lundi', date:'25 mai', isWorkout:false, isToday:true, meals:[
+  { day:'Lundi', date:'25 mai', isWorkout:false, meals:[
     { time:'Petit-déjeuner', items:['4 œufs brouillés','2 tranches pain complet','Café sans sucre'], kcal:520, protein:36 },
     { time:'Déjeuner', items:['150g riz cuit','150g poulet grillé','150g légumes surgelés','1 c.s. huile d\'olive'], kcal:580, protein:42 },
     { time:'Collation', items:['200g fromage blanc 0%','1 banane'], kcal:220, protein:22 },
@@ -846,11 +846,13 @@ function closeModalOnBg(e) { if (e.target === document.getElementById('modal-ove
 function renderNutrition() {
   const container = document.getElementById('nutrition-days');
   container.innerHTML = '';
+  const todayNutritionIdx = (new Date().getDay() + 6) % 7; // Lun=0 … Dim=6
   nutritionData.forEach((day, i) => {
+    const isToday = i === todayNutritionIdx;
     const totalKcal = day.meals.reduce((a,m)=>a+m.kcal,0);
     const totalProtein = day.meals.reduce((a,m)=>a+m.protein,0);
     const div = document.createElement('div');
-    div.className = 'nutrition-day' + (day.isToday ? ' open' : '');
+    div.className = 'nutrition-day' + (isToday ? ' open' : '');
     div.innerHTML = `
       <div class="nutrition-header" onclick="toggleNutrition(${i})">
         <div style="display:flex;align-items:center;gap:12px;">
@@ -861,7 +863,7 @@ function renderNutrition() {
           <div>
             <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
               <span style="font-family:'early-sans',sans-serif;font-size:1.05rem;font-weight:800;">${day.day.toUpperCase()}</span>
-              ${day.isToday ? '<span style="background:rgba(52,211,153,.15);color:#34D399;border:1px solid rgba(52,211,153,.3);border-radius:999px;padding:1px 8px;font-size:.65rem;font-weight:700;">AUJOURD\'HUI</span>' : ''}
+              ${isToday ? '<span style="background:rgba(52,211,153,.15);color:#34D399;border:1px solid rgba(52,211,153,.3);border-radius:999px;padding:1px 8px;font-size:.65rem;font-weight:700;">AUJOURD\'HUI</span>' : ''}
               ${day.isWorkout ? `<span style="background:rgba(197,241,53,.12);color:#C5F135;border:1px solid rgba(197,241,53,.28);border-radius:999px;padding:1px 8px;font-size:.65rem;font-weight:700;">${day.session}</span>` : ''}
             </div>
             <div style="font-size:.75rem;color:#555;margin-top:2px;">${day.meals.length} repas · ${totalKcal} kcal · ${totalProtein}g prot.</div>
