@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitpro-v1';
+const CACHE_NAME = 'fitpro-v2';
 const ASSETS = [
   '/',
   '/index.html',
@@ -6,7 +6,7 @@ const ASSETS = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/apple-touch-icon.png',
-  'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap',
+  'https://use.typekit.net/jgn7lyr.css',
   'https://cdn.tailwindcss.com'
 ];
 
