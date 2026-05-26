@@ -72,9 +72,8 @@
     .session-photo-card:active { transform: scale(.98); }
     .card-gradient { position:absolute;inset:0; }
     .card-watermark { position:absolute;right:-10px;bottom:-10px;opacity:.08; }
-    .card-content { position:relative;z-index:2;padding:22px 20px;height:100%;display:flex;flex-direction:column;justify-content:flex-end; }
-    .card-top-badge { position:absolute;top:16px;left:16px;z-index:3; }
-    .card-stats-bar { display:flex;gap:10px;margin-top:12px; }
+    .card-content { position:relative;z-index:2;padding:20px;min-height:220px;display:flex;flex-direction:column;justify-content:space-between; }
+    .card-stats-bar { display:flex;gap:8px; }
     .stat-pill { display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.45);border-radius:999px;padding:5px 12px; }
     .stat-pill span { font-size:.8rem;color:rgba(255,255,255,.8);font-weight:500; }
 
@@ -325,74 +324,69 @@
     <div style="display:flex;flex-direction:column;gap:14px;">
 
       <!-- PUSH — MERCREDI -->
-      <div class="session-photo-card" onclick="openModal('push')" style="min-height:210px;">
+      <div class="session-photo-card" onclick="openModal('push')">
         <div class="card-gradient" style="background:linear-gradient(150deg,#1f2800 0%,#2d3a00 30%,#0f0f0f 100%);"></div>
-        <!-- Watermark SVG -->
         <div class="card-watermark">
           <svg viewBox="0 0 24 24" fill="white" width="160" height="160"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
         </div>
-        <div class="card-top-badge">
-          <span class="badge-lime">Mercredi · 12h30</span>
-        </div>
-        <div class="card-content">
-          <div style="font-size:.8rem;color:var(--lime);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Pectoraux · Épaules · Triceps</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.1rem;font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:12px;">Session Push<br><span style="color:var(--lime);">Haut du Corps</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="card-stats-bar">
-              <div class="stat-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                <span>75 min</span>
+        <div class="card-content" style="justify-content:space-between;">
+          <!-- Badge dans le flux — en haut -->
+          <div><span class="badge-lime">Mercredi · 12h30</span></div>
+          <!-- Titre + stats — en bas -->
+          <div>
+            <div style="font-size:.75rem;color:var(--lime);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Pectoraux · Épaules · Triceps</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Push<br><span style="color:var(--lime);">Haut du Corps</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div class="card-stats-bar">
+                <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>75 min</span></div>
+                <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>7 exercices</span></div>
               </div>
-              <div class="stat-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="13" height="13"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                <span>7 exercices</span>
-              </div>
+              <button class="btn-lime" style="padding:10px 18px;font-size:.82rem;" onclick="event.stopPropagation();openModal('push')">Démarrer →</button>
             </div>
-            <button class="btn-lime" style="padding:10px 20px;font-size:.85rem;">Démarrer →</button>
           </div>
         </div>
       </div>
 
       <!-- PULL — SAMEDI -->
-      <div class="session-photo-card" onclick="openModal('pull')" style="min-height:210px;">
+      <div class="session-photo-card" onclick="openModal('pull')">
         <div class="card-gradient" style="background:linear-gradient(150deg,#001829 0%,#001e35 30%,#0a0a0f 100%);"></div>
         <div class="card-watermark">
           <svg viewBox="0 0 24 24" fill="white" width="160" height="160"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         </div>
-        <div class="card-top-badge">
-          <span style="background:rgba(96,165,250,.2);color:#60A5FA;border:1px solid rgba(96,165,250,.35);border-radius:999px;padding:3px 12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Samedi · 11h00</span>
-        </div>
-        <div class="card-content">
-          <div style="font-size:.8rem;color:#60A5FA;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Dos · Biceps · Core</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.1rem;font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:12px;">Session Pull<br><span style="color:#60A5FA;">Traction & Tirage</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="card-stats-bar">
-              <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>90 min</span></div>
-              <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="13" height="13"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>8 exercices</span></div>
+        <div class="card-content" style="justify-content:space-between;">
+          <div><span style="background:rgba(96,165,250,.2);color:#60A5FA;border:1px solid rgba(96,165,250,.35);border-radius:999px;padding:3px 12px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Samedi · 11h00</span></div>
+          <div>
+            <div style="font-size:.75rem;color:#60A5FA;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Dos · Biceps · Core</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Pull<br><span style="color:#60A5FA;">Traction &amp; Tirage</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div class="card-stats-bar">
+                <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>90 min</span></div>
+                <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>8 exercices</span></div>
+              </div>
+              <button class="btn-lime" style="padding:10px 18px;font-size:.82rem;" onclick="event.stopPropagation();openModal('pull')">Démarrer →</button>
             </div>
-            <button class="btn-lime" style="padding:10px 20px;font-size:.85rem;">Démarrer →</button>
           </div>
         </div>
       </div>
 
       <!-- LEGS — DIMANCHE -->
-      <div class="session-photo-card" onclick="openModal('legs')" style="min-height:210px;">
+      <div class="session-photo-card" onclick="openModal('legs')">
         <div class="card-gradient" style="background:linear-gradient(150deg,#1a0028 0%,#200030 30%,#0a0a0f 100%);"></div>
         <div class="card-watermark">
           <svg viewBox="0 0 24 24" fill="white" width="160" height="160"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
-        <div class="card-top-badge">
-          <span style="background:rgba(167,139,250,.2);color:#A78BFA;border:1px solid rgba(167,139,250,.35);border-radius:999px;padding:3px 12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Dimanche · 11h00</span>
-        </div>
-        <div class="card-content">
-          <div style="font-size:.8rem;color:#A78BFA;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Quadriceps · Ischios · Mollets</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.1rem;font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:12px;">Session Legs<br><span style="color:#A78BFA;">Bas du Corps</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="card-stats-bar">
-              <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>90 min</span></div>
-              <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="13" height="13"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>8 exercices</span></div>
+        <div class="card-content" style="justify-content:space-between;">
+          <div><span style="background:rgba(167,139,250,.2);color:#A78BFA;border:1px solid rgba(167,139,250,.35);border-radius:999px;padding:3px 12px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Dimanche · 11h00</span></div>
+          <div>
+            <div style="font-size:.75rem;color:#A78BFA;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Quadriceps · Ischios · Mollets</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Legs<br><span style="color:#A78BFA;">Bas du Corps</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div class="card-stats-bar">
+                <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>90 min</span></div>
+                <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>8 exercices</span></div>
+              </div>
+              <button class="btn-lime" style="padding:10px 18px;font-size:.82rem;" onclick="event.stopPropagation();openModal('legs')">Démarrer →</button>
             </div>
-            <button class="btn-lime" style="padding:10px 20px;font-size:.85rem;">Démarrer →</button>
           </div>
         </div>
       </div>
