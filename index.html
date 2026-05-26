@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FitPro — Mon Programme Sport</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FitPro">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- Theme & SEO -->
+  <meta name="theme-color" content="#F97316">
+  <meta name="description" content="Programme sport et nutrition personnalisé — 3 séances/semaine, machines uniquement">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Barlow Condensed', 'sans-serif'],
+            body: ['Barlow', 'sans-serif'],
+          },
+          colors: {
+            orange: { DEFAULT: '#F97316', light: '#FB923C', dark: '#EA6A07' },
+            brand: { bg: '#111827', card: '#1F2937', border: '#374151' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #111827; color: #F8FAFC; font-family: 'Barlow', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Barlow Condensed', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1F2937; }
+    ::-webkit-scrollbar-thumb { background: #F97316; border-radius: 3px; }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse-ring { 0%,100%{transform:scale(1);opacity:.8} 50%{transform:scale(1.05);opacity:1} }
+    @keyframes countdown-tick { 0%{transform:scale(1.1)} 100%{transform:scale(1)} }
+    @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+    @media (prefers-reduced-motion: no-preference) {
+      .fade-up { animation: fadeUp .5s ease both; }
+    }
+
+    .card { background: #1F2937; border: 1px solid #374151; border-radius: 16px; }
+    .card-hover { transition: all 200ms ease; cursor: pointer; }
+    .card-hover:hover { border-color: #F97316; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,.2); }
+
+    .badge-orange { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); border-radius: 999px; padding: 2px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .badge-green  { background: rgba(34,197,94,.15); color: #22C55E; border: 1px solid rgba(34,197,94,.3); border-radius: 999px; padding: 2px 12px; font-size: 12px; font-weight: 600; }
+    .badge-blue   { background: rgba(59,130,246,.15); color: #60A5FA; border: 1px solid rgba(59,130,246,.3); border-radius: 999px; padding: 2px 12px; font-size: 12px; font-weight: 600; }
+
+    /* Progress bar */
+    .progress-bar { background: #374151; border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 8px; border-radius: 999px; background: linear-gradient(90deg, #F97316, #FB923C); transition: width 1s ease; }
+
+    /* Modal */
+    .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px); }
+    .modal-box { background:#1F2937;border:1px solid #374151;border-radius:20px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;position:relative; }
+
+    /* Nav */
+    nav { backdrop-filter: blur(12px); background: rgba(17,24,39,.85); border-bottom: 1px solid #374151; position: sticky; top:0; z-index: 40; }
+
+    /* Countdown segments */
+    .countdown-seg { background: #1F2937; border: 1px solid #374151; border-radius: 12px; padding: 8px 16px; min-width: 64px; text-align: center; }
+    .countdown-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: #F97316; line-height: 1; }
+    .countdown-label { font-size: 11px; color: #6B7280; text-transform: uppercase; letter-spacing: .08em; }
+
+    /* Day pill */
+    .day-pill { border-radius: 12px; padding: 10px 8px; text-align: center; min-width: 56px; transition: all 200ms; }
+    .day-pill.workout { background: rgba(249,115,22,.15); border: 2px solid #F97316; }
+    .day-pill.today { border: 2px solid #22C55E; }
+    .day-pill.rest { background: rgba(55,65,81,.4); border: 2px solid transparent; }
+
+    /* Nutrition accordion */
+    .nutrition-day { border-radius: 12px; overflow: hidden; border: 1px solid #374151; margin-bottom: 8px; transition: border-color 200ms; }
+    .nutrition-day.open { border-color: #F97316; }
+    .nutrition-header { padding: 14px 18px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: #1F2937; transition: background 200ms; }
+    .nutrition-header:hover { background: #263041; }
+    .nutrition-body { display: none; padding: 0 18px 16px; background: #1a2332; }
+    .nutrition-day.open .nutrition-body { display: block; }
+    .nutrition-day.open .chevron { transform: rotate(180deg); }
+    .chevron { transition: transform 200ms; }
+
+    /* Exercise row */
+    .ex-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid #374151; }
+    .ex-row:last-child { border-bottom: none; }
+
+    /* Timer circle */
+    .timer-ring { width: 80px; height: 80px; }
+
+    /* Stat card */
+    .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 800; color: #F97316; line-height: 1; }
+
+    /* Section header */
+    .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+
+    /* Tip card */
+    .tip-card { background: linear-gradient(135deg, #1F2937 0%, #1a2332 100%); border: 1px solid #374151; border-radius: 14px; padding: 20px; }
+
+    /* Workout session card */
+    .session-card { background: linear-gradient(135deg, #1F2937 0%, #1a2332 100%); border: 1px solid #374151; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 220ms ease; }
+    .session-card:hover { border-color: #F97316; transform: translateY(-3px); box-shadow: 0 12px 32px rgba(249,115,22,.25); }
+    .session-accent { height: 4px; }
+
+    /* Rest timer */
+    #rest-timer { position:fixed;bottom:24px;right:24px;z-index:45;background:#1F2937;border:2px solid #F97316;border-radius:16px;padding:16px 20px;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.5); }
+
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+
+    .macro-bar { display:flex;gap:4px;height:10px;border-radius:999px;overflow:hidden;margin-top:8px; }
+    .macro-p { background:#F97316; border-radius:999px; }
+    .macro-c { background:#60A5FA; border-radius:999px; }
+    .macro-f { background:#A78BFA; border-radius:999px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,#F97316,#EA6A07);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="20" height="20"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
+      </div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:.04em;">FIT<span style="color:#F97316;">PRO</span></span>
+    </div>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="#programme" style="color:#9CA3AF;font-size:.9rem;text-decoration:none;transition:color 200ms;" onmouseover="this.style.color='#F97316'" onmouseout="this.style.color='#9CA3AF'">Programme</a>
+      <a href="#nutrition" style="color:#9CA3AF;font-size:.9rem;text-decoration:none;transition:color 200ms;" onmouseover="this.style.color='#F97316'" onmouseout="this.style.color='#9CA3AF'">Nutrition</a>
+      <a href="#conseils" style="color:#9CA3AF;font-size:.9rem;text-decoration:none;transition:color 200ms;" onmouseover="this.style.color='#F97316'" onmouseout="this.style.color='#9CA3AF'">Conseils</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section style="padding:60px 20px 40px;max-width:1200px;margin:0 auto;">
+  <div class="fade-up" style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;justify-content:space-between;">
+
+    <!-- Profile -->
+    <div>
+      <div class="badge-orange" style="margin-bottom:16px;">Corps en recomposition</div>
+      <h1 style="font-size:clamp(2.5rem,6vw,4rem);font-weight:800;text-transform:uppercase;line-height:1;margin:0 0 8px;">
+        Mon programme<br><span style="color:#F97316;">Sport & Nutrition</span>
+      </h1>
+      <p style="color:#9CA3AF;font-size:1rem;max-width:420px;margin:12px 0 24px;line-height:1.6;">
+        Programme personnalisé sur 3 séances/semaine. Objectif : perte de graisse + prise de muscle. Démarrage le <strong style="color:#F8FAFC;">mercredi 27 mai 2026</strong>.
+      </p>
+
+      <!-- Stats -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
+          <div class="stat-val">85<span style="font-size:1.2rem;color:#9CA3AF;">kg</span></div>
+          <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">Poids</div>
+        </div>
+        <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
+          <div class="stat-val">175<span style="font-size:1.2rem;color:#9CA3AF;">cm</span></div>
+          <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">Taille</div>
+        </div>
+        <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
+          <div class="stat-val" id="bmi-val">27.8</div>
+          <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">IMC</div>
+        </div>
+        <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
+          <div class="stat-val">3</div>
+          <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">Séances/sem.</div>
+        </div>
+        <div class="card" style="padding:16px 20px;text-align:center;min-width:90px;">
+          <div class="stat-val" style="color:#22C55E;">2100</div>
+          <div style="font-size:.8rem;color:#9CA3AF;margin-top:2px;">kcal/jour</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="card" style="padding:28px 32px;text-align:center;min-width:280px;">
+      <div style="font-size:.8rem;color:#9CA3AF;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;">Prochaine séance</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;color:#F97316;margin-bottom:16px;" id="next-session-name">MERCREDI — PUSH</div>
+      <div style="font-size:.85rem;color:#6B7280;margin-bottom:20px;">Mercredi 27 mai • 12h30</div>
+      <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
+        <div class="countdown-seg"><div class="countdown-num" id="cd-days">--</div><div class="countdown-label">Jours</div></div>
+        <div style="color:#F97316;font-size:1.5rem;font-weight:700;padding-bottom:12px;">:</div>
+        <div class="countdown-seg"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-label">Heures</div></div>
+        <div style="color:#F97316;font-size:1.5rem;font-weight:700;padding-bottom:12px;">:</div>
+        <div class="countdown-seg"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-label">Min</div></div>
+        <div style="color:#F97316;font-size:1.5rem;font-weight:700;padding-bottom:12px;">:</div>
+        <div class="countdown-seg"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Sec</div></div>
+      </div>
+      <div style="margin-top:20px;font-size:.8rem;color:#6B7280;">Durée : <strong style="color:#F8FAFC;">75 minutes</strong> · Machines uniquement</div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEKLY CALENDAR -->
+<section style="padding:20px 20px 40px;max-width:1200px;margin:0 auto;">
+  <div class="section-title" style="margin-bottom:20px;">Semaine type</div>
+  <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;">
+    <!-- Days -->
+    <script>
+      const days = [
+        { short:'LUN', full:'Lundi', type:'rest', label:'Repos' },
+        { short:'MAR', full:'Mardi', type:'rest', label:'Repos' },
+        { short:'MER', full:'Mercredi', type:'workout', label:'PUSH', time:'12h30', color:'#F97316' },
+        { short:'JEU', full:'Jeudi', type:'rest', label:'Repos' },
+        { short:'VEN', full:'Vendredi', type:'rest', label:'Repos' },
+        { short:'SAM', full:'Samedi', type:'workout', label:'PULL', time:'11h00', color:'#60A5FA' },
+        { short:'DIM', full:'Dimanche', type:'workout', label:'LEGS', time:'11h00', color:'#A78BFA' },
+      ];
+      const todayIdx = (new Date('2026-05-25').getDay() + 6) % 7; // Mon=0
+      document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('week-days');
+        days.forEach((d, i) => {
+          const isToday = i === todayIdx;
+          const div = document.createElement('div');
+          div.className = 'day-pill ' + (d.type === 'workout' ? 'workout' : 'rest') + (isToday ? ' today' : '');
+          div.style.minWidth = '80px';
+          div.innerHTML = `
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.08em;">${d.short}</div>
+            <div style="font-size:.7rem;color:#6B7280;margin:2px 0;">${isToday?'<span style="color:#22C55E;font-weight:600;">Aujourd\'hui</span>':'&nbsp;'}</div>
+            ${d.type === 'workout'
+              ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;color:${d.color};">${d.label}</div><div style="font-size:.7rem;color:#9CA3AF;margin-top:2px;">${d.time}</div>`
+              : `<div style="font-size:.85rem;color:#4B5563;">Repos</div><div style="font-size:.7rem;color:#374151;margin-top:2px;">Récup.</div>`}
+          `;
+          container.appendChild(div);
+        });
+      });
+    </script>
+    <div id="week-days" style="display:flex;gap:8px;min-width:max-content;"></div>
+  </div>
+</section>
+
+<!-- PROGRAMME SECTION -->
+<section id="programme" style="padding:20px 20px 60px;max-width:1200px;margin:0 auto;">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
+    <div class="section-title">Mes Séances</div>
+    <div class="badge-orange">Machines uniquement</div>
+  </div>
+  <p style="color:#9CA3AF;margin-bottom:32px;">Clique sur une séance pour voir le détail des exercices avec minuteur de repos.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+
+    <!-- MERCREDI - PUSH -->
+    <div class="session-card" onclick="openModal('push')">
+      <div class="session-accent" style="background:linear-gradient(90deg,#F97316,#FB923C);"></div>
+      <div style="padding:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+          <div>
+            <div class="badge-orange" style="margin-bottom:8px;">Mercredi 12h30</div>
+            <h3 style="font-size:1.8rem;font-weight:800;text-transform:uppercase;margin:0;line-height:1;">PUSH</h3>
+            <div style="color:#9CA3AF;font-size:.9rem;margin-top:4px;">Pectoraux · Épaules · Triceps</div>
+          </div>
+          <div style="width:50px;height:50px;background:rgba(249,115,22,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" width="26" height="26"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-size:.8rem;color:#9CA3AF;">75 min</span>
+          <span style="color:#374151;">·</span>
+          <span style="font-size:.8rem;color:#9CA3AF;">7 exercices</span>
+          <span style="color:#374151;">·</span>
+          <span style="font-size:.8rem;color:#9CA3AF;">~22 sets</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#F97316;border-radius:50%;flex-shrink:0;"></div>Développé couché machine
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#F97316;border-radius:50%;flex-shrink:0;"></div>Pec deck (butterfly)
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#F97316;border-radius:50%;flex-shrink:0;"></div>Presse épaules machine
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#9CA3AF;font-style:italic;">+ 4 exercices…</div>
+        </div>
+        <div style="margin-top:20px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:10px 14px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#F97316;">
+          Voir le programme complet →
+        </div>
+      </div>
+    </div>
+
+    <!-- SAMEDI - PULL -->
+    <div class="session-card" onclick="openModal('pull')">
+      <div class="session-accent" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
+      <div style="padding:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+          <div>
+            <div class="badge-blue" style="margin-bottom:8px;">Samedi 11h00</div>
+            <h3 style="font-size:1.8rem;font-weight:800;text-transform:uppercase;margin:0;line-height:1;">PULL</h3>
+            <div style="color:#9CA3AF;font-size:.9rem;margin-top:4px;">Dos · Biceps · Core</div>
+          </div>
+          <div style="width:50px;height:50px;background:rgba(59,130,246,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2" width="26" height="26"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-size:.8rem;color:#9CA3AF;">90 min</span>
+          <span style="color:#374151;">·</span>
+          <span style="font-size:.8rem;color:#9CA3AF;">8 exercices</span>
+          <span style="color:#374151;">·</span>
+          <span style="font-size:.8rem;color:#9CA3AF;">~27 sets</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#60A5FA;border-radius:50%;flex-shrink:0;"></div>Tirage horizontal machine
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#60A5FA;border-radius:50%;flex-shrink:0;"></div>Tirage vertical (lat pulldown)
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#60A5FA;border-radius:50%;flex-shrink:0;"></div>Curl biceps machine
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#9CA3AF;font-style:italic;">+ 5 exercices…</div>
+        </div>
+        <div style="margin-top:20px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:10px;padding:10px 14px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#60A5FA;">
+          Voir le programme complet →
+        </div>
+      </div>
+    </div>
+
+    <!-- DIMANCHE - LEGS -->
+    <div class="session-card" onclick="openModal('legs')">
+      <div class="session-accent" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
+      <div style="padding:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+          <div>
+            <div class="badge-blue" style="background:rgba(139,92,246,.15);color:#A78BFA;border-color:rgba(139,92,246,.3);margin-bottom:8px;">Dimanche 11h00</div>
+            <h3 style="font-size:1.8rem;font-weight:800;text-transform:uppercase;margin:0;line-height:1;">LEGS</h3>
+            <div style="color:#9CA3AF;font-size:.9rem;margin-top:4px;">Quadriceps · Ischios · Mollets</div>
+          </div>
+          <div style="width:50px;height:50px;background:rgba(139,92,246,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" width="26" height="26"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-size:.8rem;color:#9CA3AF;">90 min</span>
+          <span style="color:#374151;">·</span>
+          <span style="font-size:.8rem;color:#9CA3AF;">8 exercices</span>
+          <span style="color:#374151;">·</span>
+          <span style="font-size:.8rem;color:#9CA3AF;">~29 sets</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#A78BFA;border-radius:50%;flex-shrink:0;"></div>Presse à cuisses (leg press)
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#A78BFA;border-radius:50%;flex-shrink:0;"></div>Extension quadriceps
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#D1D5DB;">
+            <div style="width:6px;height:6px;background:#A78BFA;border-radius:50%;flex-shrink:0;"></div>Curl ischio-jambiers
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#9CA3AF;font-style:italic;">+ 5 exercices…</div>
+        </div>
+        <div style="margin-top:20px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:10px 14px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#A78BFA;">
+          Voir le programme complet →
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- NUTRITION SECTION -->
+<section id="nutrition" style="padding:20px 20px 60px;max-width:1200px;margin:0 auto;">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap;">
+    <div class="section-title">Plan Nutritionnel</div>
+    <div class="badge-green">~2100 kcal · ~160g protéines</div>
+    <div style="font-size:.8rem;color:#9CA3AF;background:#1F2937;border:1px solid #374151;border-radius:8px;padding:4px 12px;">Budget ~60-70€/semaine</div>
+  </div>
+  <p style="color:#9CA3AF;margin-bottom:24px;">Clique sur un jour pour voir le détail des repas. Les jours d'entraînement sont marqués.</p>
+
+  <!-- Macro overview -->
+  <div style="display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;">
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:12px;">
+      <div style="width:12px;height:12px;background:#F97316;border-radius:3px;flex-shrink:0;"></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;">160g</div><div style="font-size:.75rem;color:#9CA3AF;">Protéines</div></div>
+    </div>
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:12px;">
+      <div style="width:12px;height:12px;background:#60A5FA;border-radius:3px;flex-shrink:0;"></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;">220g</div><div style="font-size:.75rem;color:#9CA3AF;">Glucides</div></div>
+    </div>
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:12px;">
+      <div style="width:12px;height:12px;background:#A78BFA;border-radius:3px;flex-shrink:0;"></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;">65g</div><div style="font-size:.75rem;color:#9CA3AF;">Lipides</div></div>
+    </div>
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:12px;">
+      <div style="width:12px;height:12px;background:#22C55E;border-radius:3px;flex-shrink:0;"></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;">2-3L</div><div style="font-size:.75rem;color:#9CA3AF;">Eau/jour</div></div>
+    </div>
+  </div>
+
+  <div id="nutrition-days"></div>
+</section>
+
+<!-- CONSEILS -->
+<section id="conseils" style="padding:20px 20px 60px;max-width:1200px;margin:0 auto;">
+  <div class="section-title" style="margin-bottom:24px;">Conseils & Astuces</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+
+    <div class="tip-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;background:rgba(249,115,22,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:700;margin:0;">Progression</h4>
+      </div>
+      <p style="font-size:.85rem;color:#9CA3AF;line-height:1.6;margin:0;">Augmente les charges de 2,5 kg dès que tu complètes tous les sets avec bonne forme. Note tes charges à chaque séance pour suivre ta progression.</p>
+    </div>
+
+    <div class="tip-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;background:rgba(34,197,94,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" width="20" height="20"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:700;margin:0;">Récupération</h4>
+      </div>
+      <p style="font-size:.85rem;color:#9CA3AF;line-height:1.6;margin:0;">Dors 7-9h par nuit — c'est là que tu prends du muscle. Les jours de repos sont aussi importants que les séances. Respecte-les.</p>
+    </div>
+
+    <div class="tip-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;background:rgba(96,165,250,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2" width="20" height="20"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:700;margin:0;">Temps de repos</h4>
+      </div>
+      <p style="font-size:.85rem;color:#9CA3AF;line-height:1.6;margin:0;">Respecte scrupuleusement les temps de repos indiqués. Ni trop court (récup insuffisante), ni trop long (refroidissement musculaire). Utilise le minuteur intégré.</p>
+    </div>
+
+    <div class="tip-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;background:rgba(167,139,250,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:700;margin:0;">Forme avant charge</h4>
+      </div>
+      <p style="font-size:.85rem;color:#9CA3AF;line-height:1.6;margin:0;">Sur machine c'est plus sécurisé, mais la technique reste primordiale. Sens le muscle ciblé travailler. Si tu ne le sens pas, réduis la charge et ajuste l'assise.</p>
+    </div>
+
+    <div class="tip-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;background:rgba(249,115,22,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:700;margin:0;">Nutrition maison</h4>
+      </div>
+      <p style="font-size:.85rem;color:#9CA3AF;line-height:1.6;margin:0;">Prépare tes repas à l'avance (batch cooking du dimanche soir). Le poulet, les oeufs et le riz en grande quantité font baisser le budget. Légumes surgelés = excellent rapport qualité/prix.</p>
+    </div>
+
+    <div class="tip-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;background:rgba(34,197,94,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:700;margin:0;">Mesures régulières</h4>
+      </div>
+      <p style="font-size:.85rem;color:#9CA3AF;line-height:1.6;margin:0;">Pèse-toi 1x/semaine le matin à jeun. Prends tes mensurations (poitrine, bras, taille, hanches) 1x/mois. La balance peut stagner même si tu perds de la graisse — c'est normal.</p>
+    </div>
+
+  </div>
+
+  <!-- Budget tips -->
+  <div class="card" style="margin-top:24px;padding:24px;border-color:rgba(249,115,22,.3);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;color:#F97316;margin-bottom:16px;">Courses économiques — Aliments clés</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Filets de poulet</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Oeufs (x18)</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Riz long 5kg</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Flocons d'avoine 1kg</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Fromage blanc 0% (pot 1kg)</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Thon en conserve (multipack)</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Légumes surgelés 1kg</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Lentilles corail 500g</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Steak haché 5%MG</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Patates douces</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Pain complet</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Beurre de cacahuète 500g</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Saumon (surgelé)</span>
+      <span style="background:#1a2332;border:1px solid #374151;border-radius:8px;padding:6px 14px;font-size:.85rem;color:#D1D5DB;">Bananes (régime)</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid #374151;padding:32px 20px;text-align:center;color:#6B7280;font-size:.85rem;">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#F97316;margin-bottom:8px;">FITPRO</div>
+  <div>Programme personnalisé · Démarrage le 27 mai 2026 · 3 séances / semaine</div>
+  <div style="margin-top:8px;font-size:.75rem;opacity:.6;">Consulte un professionnel de santé avant de commencer tout programme sportif.</div>
+</footer>
+
+<!-- REST TIMER (hidden by default) -->
+<div id="rest-timer" style="display:none;">
+  <div style="font-size:.75rem;color:#9CA3AF;margin-bottom:4px;">Temps de repos</div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.5rem;font-weight:800;color:#F97316;text-align:center;" id="timer-display">00:00</div>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button onclick="pauseTimer()" style="flex:1;background:#374151;border:none;border-radius:8px;padding:6px;color:white;cursor:pointer;font-size:.8rem;">Pause</button>
+    <button onclick="stopTimer()" style="flex:1;background:#374151;border:none;border-radius:8px;padding:6px;color:white;cursor:pointer;font-size:.8rem;">Stop</button>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay" style="display:none;" onclick="closeModalOnBg(event)">
+  <div class="modal-box" id="modal-box">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const sessions = {
+  push: {
+    name: 'PUSH', day: 'Mercredi', time: '12h30 — 13h45', duration: '75 min',
+    color: '#F97316', colorBg: 'rgba(249,115,22,.15)', colorBorder: 'rgba(249,115,22,.3)',
+    muscle: 'Pectoraux · Épaules · Triceps',
+    warmup: 'Vélo elliptique 5 min (intensité légère)',
+    exercises: [
+      { name: 'Développé couché machine', sets: 4, reps: '10-12', rest: 90, tip: 'Régle l\'assise pour que les poignées soient à hauteur de poitrine. Pousse en expirant.' },
+      { name: 'Pec deck (Butterfly)', sets: 3, reps: '12-15', rest: 60, tip: 'Contrôle la phase excentrique (2-3 secondes). Sens l\'étirement en pec.' },
+      { name: 'Presse épaules machine', sets: 4, reps: '10-12', rest: 90, tip: 'Garde le dos bien plaqué contre le dossier. Ne bloque pas les coudes en haut.' },
+      { name: 'Élévations latérales machine', sets: 3, reps: '12-15', rest: 60, tip: 'Monte jusqu\'à l\'horizontale, pas plus haut. Évite de hausser les épaules.' },
+      { name: 'Triceps poulie haute (corde)', sets: 3, reps: '12-15', rest: 60, tip: 'Écarte la corde en bas du mouvement. Coudes fixes contre le corps.' },
+      { name: 'Dips machine assistée', sets: 3, reps: '10-12', rest: 75, tip: 'Incline légèrement le buste en avant pour cibler les pecs. Descends jusqu\'à 90°.' },
+    ],
+    cooldown: 'Étirements pecs + épaules + triceps : 5 min'
+  },
+  pull: {
+    name: 'PULL', day: 'Samedi', time: '11h00 — 12h30', duration: '90 min',
+    color: '#60A5FA', colorBg: 'rgba(96,165,250,.15)', colorBorder: 'rgba(96,165,250,.3)',
+    muscle: 'Dos · Biceps · Core',
+    warmup: 'Rameur 5 min (rythme modéré)',
+    exercises: [
+      { name: 'Tirage horizontal machine (Row)', sets: 4, reps: '10-12', rest: 90, tip: 'Serre les omoplates en fin de mouvement. Coudes proches du corps.' },
+      { name: 'Tirage vertical (Lat pulldown)', sets: 4, reps: '10-12', rest: 90, tip: 'Tire la barre vers le haut de la poitrine. Penche légèrement le buste.' },
+      { name: 'Machine rowing buste penché', sets: 3, reps: '12', rest: 75, tip: 'Concentre-toi sur la contraction du dos, pas les bras. Phase excentrique lente.' },
+      { name: 'Curl biceps machine', sets: 4, reps: '12-15', rest: 60, tip: 'Ne bascule pas le buste. Contrôle la descente sur 2-3 secondes.' },
+      { name: 'Curl marteau poulie', sets: 3, reps: '12', rest: 60, tip: 'Pouce vers le haut tout le mouvement. Travaille les brachial et brachioradial.' },
+      { name: 'Crunch machine', sets: 3, reps: '15-20', rest: 60, tip: 'Expire en contractant. Garde la tension abdominale constante.' },
+      { name: 'Gainage planche', sets: 3, reps: '45 sec', rest: 45, tip: 'Bassin ni trop haut ni trop bas. Contracte fessiers et abdos simultanément.', isPlank: true },
+    ],
+    cooldown: 'Étirements dos + biceps + abdos : 5 min'
+  },
+  legs: {
+    name: 'LEGS', day: 'Dimanche', time: '11h00 — 12h30', duration: '90 min',
+    color: '#A78BFA', colorBg: 'rgba(167,139,250,.15)', colorBorder: 'rgba(167,139,250,.3)',
+    muscle: 'Quadriceps · Ischios-jambiers · Mollets · Core',
+    warmup: 'Vélo 5 min (intensité modérée)',
+    exercises: [
+      { name: 'Presse à cuisses (Leg press)', sets: 4, reps: '12-15', rest: 90, tip: 'Pieds écartés à largeur d\'épaules, légèrement vers l\'extérieur. Ne verrouille pas les genoux.' },
+      { name: 'Extension quadriceps machine', sets: 4, reps: '12-15', rest: 75, tip: 'Extension complète en haut avec 1s de contraction. Descente lente (3 sec).' },
+      { name: 'Curl ischio-jambiers (Lying)', sets: 4, reps: '12-15', rest: 75, tip: 'Ramène les talons vers les fesses. Évite de soulever les hanches.' },
+      { name: 'Abducteur machine', sets: 3, reps: '15', rest: 60, tip: 'Ouvre les jambes lentement, reviens encore plus lentement. Garde le dos droit.' },
+      { name: 'Adducteur machine', sets: 3, reps: '15', rest: 60, tip: 'Pince les jambes jusqu\'au bout. Contrôle bien le mouvement de retour.' },
+      { name: 'Mollets machine (Calf raise)', sets: 4, reps: '15-20', rest: 60, tip: 'Descends au maximum pour étirer le mollet. Monte sur la pointe, tiens 1 sec.' },
+      { name: 'Crunch machine', sets: 3, reps: '15', rest: 60, tip: 'En fin de séance — exécute lentement, qualité > quantité.' },
+    ],
+    cooldown: 'Étirements quadriceps + ischios + mollets : 5 min'
+  }
+};
+
+const nutritionData = [
+  {
+    day: 'Lundi', date: '25 mai', isWorkout: false, isToday: true,
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['4 œufs brouillés', '2 tranches de pain complet', 'Café sans sucre'], kcal: 520, protein: 36 },
+      { time: 'Déjeuner', icon: '🍽️', items: ['150g riz cuit', '150g poulet grillé', '150g légumes surgelés', '1 c.s. huile d\'olive'], kcal: 580, protein: 42 },
+      { time: 'Collation', icon: '🥛', items: ['200g fromage blanc 0%', '1 banane'], kcal: 220, protein: 22 },
+      { time: 'Dîner', icon: '🌙', items: ['150g pâtes complètes cuites', '1 boîte thon naturel (140g)', 'Tomates cerises', '1 c.s. huile d\'olive'], kcal: 560, protein: 42 },
+    ]
+  },
+  {
+    day: 'Mardi', date: '26 mai', isWorkout: false,
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['80g flocons d\'avoine', '250ml lait demi-écrémé', '1 banane', '1 c.c. miel'], kcal: 490, protein: 18 },
+      { time: 'Déjeuner', icon: '🍽️', items: ['1 patate douce moyenne (200g)', '150g steak haché 5% MG', 'Salade verte + vinaigrette légère'], kcal: 540, protein: 38 },
+      { time: 'Collation', icon: '🥛', items: ['2 tranches jambon blanc', '1 pomme'], kcal: 170, protein: 16 },
+      { time: 'Dîner', icon: '🌙', items: ['Omelette 3 œufs', 'Légumes poêlés (courgette, poivron)', '1 tranche pain complet'], kcal: 450, protein: 32 },
+    ]
+  },
+  {
+    day: 'Mercredi', date: '27 mai', isWorkout: true, session: 'PUSH 12h30',
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['80g flocons d\'avoine', '250ml lait', '100g fruits rouges'], kcal: 440, protein: 16 },
+      { time: 'Pré-workout (12h)', icon: '⚡', items: ['1 banane', 'Café noir'], kcal: 110, protein: 1, preWorkout: true },
+      { time: 'Post-workout', icon: '💪', items: ['200g fromage blanc 0%', 'Whey (si disponible)', '1 fruit'], kcal: 280, protein: 38, postWorkout: true },
+      { time: 'Déjeuner/Dîner', icon: '🌙', items: ['150g riz', '200g saumon', 'Brocolis vapeur', '1 patate douce'], kcal: 680, protein: 52 },
+    ]
+  },
+  {
+    day: 'Jeudi', date: '28 mai', isWorkout: false,
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['3 œufs brouillés', '200g fromage blanc 0%', '1 fruit de saison'], kcal: 440, protein: 38 },
+      { time: 'Déjeuner', icon: '🍽️', items: ['150g lentilles corail cuites', '150g escalope de dinde', 'Carottes vapeur'], kcal: 530, protein: 44 },
+      { time: 'Collation', icon: '🥛', items: ['150g skyr nature', '15g noix (petit poignée)'], kcal: 200, protein: 20 },
+      { time: 'Dîner', icon: '🌙', items: ['150g cabillaud poché', '200g haricots verts vapeur', '100g riz'], kcal: 440, protein: 36 },
+    ]
+  },
+  {
+    day: 'Vendredi', date: '29 mai', isWorkout: false,
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['2 tranches pain complet', '2 c.s. beurre de cacahuète', '1 banane', 'Café'], kcal: 470, protein: 18 },
+      { time: 'Déjeuner', icon: '🍽️', items: ['150g pâtes', '1 boîte thon', 'Légumes variés', 'Huile olive'], kcal: 580, protein: 40 },
+      { time: 'Collation', icon: '🥛', items: ['200g fromage blanc 0%', '1 pomme'], kcal: 180, protein: 20 },
+      { time: 'Dîner', icon: '🌙', items: ['150g steak haché 5%', 'Légumes poêlés (courgette, oignon)', '1 patate douce'], kcal: 520, protein: 38 },
+    ]
+  },
+  {
+    day: 'Samedi', date: '30 mai', isWorkout: true, session: 'PULL 11h00',
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['80g flocons d\'avoine', '250ml lait', '1 banane'], kcal: 460, protein: 18 },
+      { time: 'Pré-workout (10h30)', icon: '⚡', items: ['Café noir', '2 tranches pain complet', '1 c.s. beurre de cacahuète'], kcal: 270, protein: 8, preWorkout: true },
+      { time: 'Post-workout', icon: '💪', items: ['150g riz', '200g poulet', 'Légumes variés'], kcal: 560, protein: 46, postWorkout: true },
+      { time: 'Dîner', icon: '🌙', items: ['150g pâtes complètes', '150g saumon', 'Courgettes sautées'], kcal: 560, protein: 38 },
+    ]
+  },
+  {
+    day: 'Dimanche', date: '31 mai', isWorkout: true, session: 'LEGS 11h00',
+    meals: [
+      { time: 'Petit-déjeuner', icon: '☀️', items: ['4 œufs brouillés', 'Légumes poêlés (épinards, champignons)', '30g fromage râpé'], kcal: 520, protein: 38 },
+      { time: 'Pré-workout (10h30)', icon: '⚡', items: ['1 banane', 'Café noir'], kcal: 110, protein: 1, preWorkout: true },
+      { time: 'Post-workout', icon: '💪', items: ['200g fromage blanc 0%', '100g fruits', '1 c.c. miel'], kcal: 240, protein: 22, postWorkout: true },
+      { time: 'Déjeuner', icon: '🍽️', items: ['150g riz', '200g dinde', 'Légumes variés'], kcal: 540, protein: 46 },
+      { time: 'Dîner', icon: '🌙', items: ['Soupe légumes maison', '2 tranches pain complet', '2 tranches jambon'], kcal: 360, protein: 24 },
+    ]
+  },
+];
+
+// ===================== TIMER =====================
+let timerInterval = null, timerSeconds = 0, timerPaused = false;
+
+function startRestTimer(seconds) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerSeconds = seconds;
+  timerPaused = false;
+  document.getElementById('rest-timer').style.display = 'block';
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    if (!timerPaused) {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('timer-display').textContent = 'OK !';
+        document.getElementById('timer-display').style.color = '#22C55E';
+        setTimeout(() => {
+          document.getElementById('rest-timer').style.display = 'none';
+          document.getElementById('timer-display').style.color = '#F97316';
+        }, 2000);
+      }
+    }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60).toString().padStart(2,'0');
+  const s = (timerSeconds % 60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent = `${m}:${s}`;
+}
+function pauseTimer() { timerPaused = !timerPaused; }
+function stopTimer() {
+  clearInterval(timerInterval);
+  document.getElementById('rest-timer').style.display = 'none';
+}
+
+// ===================== MODAL =====================
+function openModal(key) {
+  const s = sessions[key];
+  let html = `
+    <div style="background:linear-gradient(135deg,${s.colorBg},transparent);padding:28px 28px 20px;border-bottom:1px solid #374151;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:.8rem;color:${s.color};font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">${s.day} · ${s.time}</div>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:2.5rem;font-weight:800;text-transform:uppercase;margin:0;line-height:1;">SESSION ${s.name}</h2>
+          <div style="color:#9CA3AF;margin-top:6px;font-size:.9rem;">${s.muscle}</div>
+        </div>
+        <button onclick="closeModal()" style="background:#374151;border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="padding:24px 28px;">
+      <!-- Warmup -->
+      <div style="background:#1a2332;border:1px solid ${s.colorBorder};border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+        <div style="width:32px;height:32px;background:${s.colorBg};border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="${s.color}" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div>
+          <div style="font-size:.7rem;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;">Échauffement</div>
+          <div style="font-size:.9rem;color:#D1D5DB;margin-top:2px;">${s.warmup}</div>
+        </div>
+      </div>
+
+      <!-- Exercises -->
+      <div style="margin-bottom:20px;">
+        ${s.exercises.map((ex, i) => `
+          <div style="background:#1a2332;border:1px solid #374151;border-radius:12px;padding:16px 18px;margin-bottom:8px;transition:border-color 200ms;" onmouseover="this.style.borderColor='${s.color}'" onmouseout="this.style.borderColor='#374151'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <div style="width:24px;height:24px;background:${s.colorBg};border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <span style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;color:${s.color};">${i+1}</span>
+                  </div>
+                  <span style="font-weight:600;font-size:.95rem;">${ex.name}</span>
+                </div>
+                <p style="color:#6B7280;font-size:.8rem;margin:0 0 10px 32px;line-height:1.5;">${ex.tip}</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-left:32px;">
+                  <span style="background:#1F2937;border:1px solid #374151;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600;">${ex.sets} séries</span>
+                  <span style="background:#1F2937;border:1px solid #374151;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600;">${ex.reps} reps</span>
+                </div>
+              </div>
+              <button onclick="startRestTimer(${ex.isPlank ? 45 : ex.rest})" style="background:${s.colorBg};border:1px solid ${s.colorBorder};border-radius:10px;padding:10px 14px;cursor:pointer;text-align:center;min-width:80px;flex-shrink:0;transition:all 200ms;" onmouseover="this.style.background='${s.color}';this.style.color='white'" onmouseout="this.style.background='${s.colorBg}';this.style.color='${s.color}'">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;color:inherit;">${ex.isPlank ? '45s' : ex.rest+'s'}</div>
+                <div style="font-size:.65rem;color:inherit;opacity:.8;text-transform:uppercase;letter-spacing:.05em;">repos</div>
+              </button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Cooldown -->
+      <div style="background:#1a2332;border:1px solid #374151;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
+        <div style="width:32px;height:32px;background:rgba(34,197,94,.15);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div>
+          <div style="font-size:.7rem;color:#22C55E;text-transform:uppercase;letter-spacing:.08em;">Récupération</div>
+          <div style="font-size:.9rem;color:#D1D5DB;margin-top:2px;">${s.cooldown}</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;text-align:center;font-size:.75rem;color:#6B7280;">
+        Clique sur le bouton de repos pour lancer le minuteur automatiquement.
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ===================== NUTRITION =====================
+function renderNutrition() {
+  const container = document.getElementById('nutrition-days');
+  container.innerHTML = '';
+  nutritionData.forEach((day, i) => {
+    const totalKcal = day.meals.reduce((a, m) => a + m.kcal, 0);
+    const totalProtein = day.meals.reduce((a, m) => a + m.protein, 0);
+    const div = document.createElement('div');
+    div.className = 'nutrition-day' + (day.isToday ? ' open' : '');
+    div.innerHTML = `
+      <div class="nutrition-header" onclick="toggleNutrition(${i})">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:48px;height:48px;background:${day.isWorkout ? 'rgba(249,115,22,.15)' : '#1a2332'};border:1px solid ${day.isWorkout ? 'rgba(249,115,22,.3)' : '#374151'};border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;color:${day.isWorkout ? '#F97316' : '#9CA3AF'};line-height:1;">${day.date.split(' ')[0]}</span>
+            <span style="font-size:.6rem;color:#6B7280;text-transform:uppercase;">${day.date.split(' ')[1]}</span>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;">${day.day.toUpperCase()}</span>
+              ${day.isToday ? '<span style="background:rgba(34,197,94,.15);color:#22C55E;border:1px solid rgba(34,197,94,.3);border-radius:999px;padding:1px 8px;font-size:.7rem;font-weight:700;">AUJOURD\'HUI</span>' : ''}
+              ${day.isWorkout ? `<span style="background:rgba(249,115,22,.15);color:#F97316;border:1px solid rgba(249,115,22,.3);border-radius:999px;padding:1px 8px;font-size:.7rem;font-weight:700;">${day.session}</span>` : ''}
+            </div>
+            <div style="font-size:.8rem;color:#6B7280;margin-top:2px;">${day.meals.length} repas · ${totalKcal} kcal · ${totalProtein}g protéines</div>
+          </div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" width="20" height="20"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="nutrition-body">
+        ${day.meals.map(meal => `
+          <div style="padding:10px 0;border-bottom:1px solid #374151;last-child:border-none;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              ${meal.preWorkout ? '<span style="background:rgba(249,115,22,.15);color:#F97316;border-radius:6px;padding:2px 8px;font-size:.7rem;font-weight:700;">PRÉ-WORKOUT</span>' : ''}
+              ${meal.postWorkout ? '<span style="background:rgba(34,197,94,.15);color:#22C55E;border-radius:6px;padding:2px 8px;font-size:.7rem;font-weight:700;">POST-WORKOUT</span>' : ''}
+              <span style="font-weight:600;font-size:.9rem;">${meal.time}</span>
+            </div>
+            <ul style="margin:4px 0 4px 0;padding:0;list-style:none;">
+              ${meal.items.map(item => `<li style="font-size:.85rem;color:#9CA3AF;padding:1px 0;display:flex;align-items:center;gap:6px;"><span style="width:4px;height:4px;background:#F97316;border-radius:50%;flex-shrink:0;display:inline-block;"></span>${item}</li>`).join('')}
+            </ul>
+            <div style="display:flex;gap:10px;margin-top:4px;">
+              <span style="font-size:.75rem;color:#6B7280;">${meal.kcal} kcal</span>
+              <span style="font-size:.75rem;color:#F97316;">${meal.protein}g prot.</span>
+            </div>
+          </div>
+        `).join('')}
+        <div style="margin-top:12px;background:#1F2937;border-radius:8px;padding:10px 14px;display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;">
+          <span style="font-size:.85rem;font-weight:600;">Total journée :</span>
+          <span style="font-size:.85rem;color:#F97316;font-weight:600;">${totalKcal} kcal</span>
+          <span style="font-size:.85rem;color:#22C55E;font-weight:600;">${totalProtein}g protéines</span>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleNutrition(idx) {
+  const days = document.querySelectorAll('.nutrition-day');
+  days[idx].classList.toggle('open');
+}
+
+// ===================== COUNTDOWN =====================
+function updateCountdown() {
+  const now = new Date();
+  // Next session: Wednesday May 27 2026 at 12:30
+  const nextSessions = [
+    new Date('2026-05-27T12:30:00'), // Wed push
+    new Date('2026-05-30T11:00:00'), // Sat pull
+    new Date('2026-05-31T11:00:00'), // Sun legs
+  ];
+  const sessionNames = ['MERCREDI — PUSH', 'SAMEDI — PULL', 'DIMANCHE — LEGS'];
+  let target = null, name = '';
+  for (let i = 0; i < nextSessions.length; i++) {
+    if (nextSessions[i] > now) { target = nextSessions[i]; name = sessionNames[i]; break; }
+  }
+  if (!target) {
+    document.getElementById('next-session-name').textContent = 'Programme terminé !';
+    return;
+  }
+  document.getElementById('next-session-name').textContent = name;
+  const diff = target - now;
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderNutrition();
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+  // Keyboard close modal
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+});
+
+// ===================== SERVICE WORKER =====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+
+// ===================== INSTALL BANNER (Android/Desktop) =====================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('install-btn');
+  if (btn) btn.style.display = 'flex';
+});
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      const btn = document.getElementById('install-btn');
+      if (btn) btn.style.display = 'none';
+    });
+  }
+}
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('install-btn');
+  if (btn) btn.style.display = 'none';
+});
+</script>
+
+<!-- iOS Install banner (toujours visible sur Safari iPhone) -->
+<div id="ios-banner" style="position:fixed;bottom:0;left:0;right:0;z-index:60;padding:12px 16px 28px;background:linear-gradient(180deg,rgba(17,24,39,0) 0%,#111827 20%);display:none;">
+  <div style="background:#1F2937;border:1px solid #F97316;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+    <div style="width:44px;height:44px;background:linear-gradient(135deg,#F97316,#EA6A07);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="22" height="22"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;">Installer FitPro</div>
+      <div style="font-size:.78rem;color:#9CA3AF;margin-top:2px;">Appuie sur <strong style="color:#F8FAFC;">Partager</strong> puis <strong style="color:#F8FAFC;">"Sur l'écran d'accueil"</strong></div>
+    </div>
+    <button onclick="document.getElementById('ios-banner').style.display='none'" style="background:#374151;border:none;border-radius:8px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Android/Desktop install button (floating) -->
+<button id="install-btn" onclick="installApp()" style="display:none;position:fixed;bottom:24px;left:24px;z-index:60;background:linear-gradient(135deg,#F97316,#EA6A07);border:none;border-radius:14px;padding:12px 20px;cursor:pointer;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(249,115,22,.4);">
+  <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:white;">Installer l'app</span>
+</button>
+
+<script>
+// Show iOS banner if not already installed and on Safari iOS
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isStandalone = window.navigator.standalone === true;
+const dismissed = localStorage.getItem('ios-banner-dismissed');
+if (isIOS && !isStandalone && !dismissed) {
+  setTimeout(() => {
+    document.getElementById('ios-banner').style.display = 'block';
+  }, 2000);
+  document.getElementById('ios-banner').querySelector('button').addEventListener('click', () => {
+    localStorage.setItem('ios-banner-dismissed', '1');
+  });
+}
+</script>
+</body>
+</html>
