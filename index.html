@@ -12,8 +12,7 @@
   <meta name="theme-color" content="#141414">
   <meta name="description" content="Programme sport et nutrition personnalisé — 3 séances/semaine, machines uniquement">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.typekit.net/jgn7lyr.css">
   <style>
     :root {
       --bg:      #141414;
@@ -30,8 +29,8 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); }
-    body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; padding-bottom: 90px; }
-    h1,h2,h3,h4,h5 { font-family: 'Barlow Condensed', sans-serif; }
+    body { background: var(--bg); color: var(--text); font-family: 'early-sans', sans-serif; min-height: 100vh; padding-bottom: 90px; }
+    h1,h2,h3,h4,h5 { font-family: 'early-sans', sans-serif; }
 
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: var(--card); }
@@ -52,7 +51,7 @@
       padding: 10px 8px 20px; padding-bottom: max(20px, env(safe-area-inset-bottom));
     }
     .nav-item { display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 12px;border-radius:12px;transition:all 200ms;flex:1;text-decoration:none; }
-    .nav-item .nav-label { font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:color 200ms; }
+    .nav-item .nav-label { font-family:'early-sans',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:color 200ms; }
     .nav-item.active .nav-label { color:var(--lime); }
     .nav-item.active svg { stroke:var(--lime); }
     .nav-item svg { stroke:var(--muted); transition:stroke 200ms; }
@@ -81,7 +80,7 @@
     .btn-lime {
       background:var(--lime); color:#0a0a0a;
       border:none; border-radius:999px;
-      font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1rem;
+      font-family:'early-sans',sans-serif; font-weight:800; font-size:1rem;
       letter-spacing:.04em; text-transform:uppercase;
       padding:13px 28px; cursor:pointer;
       transition:all 200ms; display:inline-flex; align-items:center; gap:8px;
@@ -91,7 +90,7 @@
     .btn-ghost {
       background:rgba(255,255,255,.08); color:var(--text);
       border:1px solid var(--border); border-radius:999px;
-      font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.9rem;
+      font-family:'early-sans',sans-serif; font-weight:700; font-size:.9rem;
       letter-spacing:.04em; padding:10px 20px; cursor:pointer;
       transition:all 200ms;
     }
@@ -110,15 +109,15 @@
     }
     .week-pill.workout { border-color: var(--lime-border); background:var(--lime-bg); }
     .week-pill.today   { border-color: var(--lime); box-shadow:0 0 0 1px var(--lime); }
-    .week-pill-day { font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em; }
-    .week-pill-label { font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;color:var(--lime);margin-top:2px; }
+    .week-pill-day { font-family:'early-sans',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em; }
+    .week-pill-label { font-family:'early-sans',sans-serif;font-size:1rem;font-weight:800;color:var(--lime);margin-top:2px; }
     .week-pill-rest { font-size:.78rem;color:var(--muted2);margin-top:4px; }
 
     /* ── COUNTDOWN ──────────────────────────── */
     .cd-seg { text-align:center; }
-    .cd-num { font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:900;color:var(--lime);line-height:1; }
+    .cd-num { font-family:'early-sans',sans-serif;font-size:2.4rem;font-weight:900;color:var(--lime);line-height:1; }
     .cd-label { font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em; }
-    .cd-sep { font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--lime-border);padding:0 2px;padding-bottom:14px; }
+    .cd-sep { font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;color:var(--lime-border);padding:0 2px;padding-bottom:14px; }
 
     /* ── NUTRITION ACCORDION ────────────────── */
     .nutrition-day { border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:8px;transition:border-color 200ms; }
@@ -172,7 +171,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" width="18" height="18"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </div>
     <div style="flex:1;min-width:160px;">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;">Mettre à jour ton poids</div>
+      <div style="font-family:'early-sans',sans-serif;font-weight:700;font-size:1rem;">Mettre à jour ton poids</div>
       <div style="font-size:.78rem;color:var(--muted);margin-top:2px;" id="alert-subtitle">Ça fait plus d'un mois — suis ta progression !</div>
     </div>
     <div style="display:flex;gap:8px;flex-shrink:0;">
@@ -201,10 +200,10 @@
         <label style="display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px;">Nouveau poids (kg)</label>
         <div style="display:flex;gap:10px;align-items:center;">
           <input id="weight-input" type="number" step="0.1" min="40" max="200"
-            style="flex:1;background:#0f0f0f;border:2px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;outline:none;transition:border-color 200ms;text-align:center;"
+            style="flex:1;background:#0f0f0f;border:2px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--text);font-family:'early-sans',sans-serif;font-size:2.2rem;font-weight:800;outline:none;transition:border-color 200ms;text-align:center;"
             onfocus="this.style.borderColor='var(--lime)'" onblur="this.style.borderColor='var(--border)'"
             placeholder="83.5">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;color:var(--muted);font-weight:700;">kg</span>
+          <span style="font-family:'early-sans',sans-serif;font-size:1.4rem;color:var(--muted);font-weight:700;">kg</span>
         </div>
         <div id="weight-diff-preview" style="margin-top:10px;font-size:.85rem;text-align:center;color:var(--muted);min-height:20px;"></div>
       </div>
@@ -223,16 +222,16 @@
   <div style="max-width:700px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
     <div>
       <div style="font-size:.75rem;color:var(--muted);font-weight:500;">Bienvenue 👋</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;line-height:1.1;">Chris Ferrero</div>
+      <div style="font-family:'early-sans',sans-serif;font-size:1.3rem;font-weight:800;line-height:1.1;">Chris Ferrero</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center;">
       <!-- Avatar + poids cliquable -->
       <div class="weight-card card-sm" onclick="openWeightModal()" style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;">
         <div class="weight-edit-icon" style="position:absolute;display:none;"></div>
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" width="16" height="16"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="18" cy="6" r="2" fill="var(--lime)" stroke="none"/></svg>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;" id="weight-display-mini">85 kg</span>
+        <span style="font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:800;" id="weight-display-mini">85 kg</span>
       </div>
-      <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--lime),var(--lime-d));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:900;color:#0a0a0a;flex-shrink:0;">CF</div>
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--lime),var(--lime-d));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:900;color:#0a0a0a;flex-shrink:0;">CF</div>
     </div>
   </div>
 </header>
@@ -251,28 +250,28 @@
         <div class="weight-edit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--lime);line-height:1;" id="weight-display">85<span style="font-size:1rem;color:var(--muted);">kg</span></div>
+        <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;color:var(--lime);line-height:1;" id="weight-display">85<span style="font-size:1rem;color:var(--muted);">kg</span></div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Poids</div>
         <div id="weight-delta" style="font-size:.7rem;margin-top:4px;font-weight:700;display:none;"></div>
       </div>
 
       <div class="card" style="padding:18px 20px;text-align:center;min-width:100px;flex-shrink:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--text);line-height:1;">175<span style="font-size:1rem;color:var(--muted);">cm</span></div>
+        <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;color:var(--text);line-height:1;">175<span style="font-size:1rem;color:var(--muted);">cm</span></div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Taille</div>
       </div>
 
       <div class="card" style="padding:18px 20px;text-align:center;min-width:100px;flex-shrink:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--text);line-height:1;" id="bmi-val">27.8</div>
+        <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;color:var(--text);line-height:1;" id="bmi-val">27.8</div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">IMC</div>
       </div>
 
       <div class="card" style="padding:18px 20px;text-align:center;min-width:100px;flex-shrink:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--lime);line-height:1;">3</div>
+        <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;color:var(--lime);line-height:1;">3</div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Séances/sem</div>
       </div>
 
       <div class="card" style="padding:18px 20px;text-align:center;min-width:100px;flex-shrink:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--lime);line-height:1;">2100</div>
+        <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;color:var(--lime);line-height:1;">2100</div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">kcal/jour</div>
       </div>
     </div>
@@ -290,7 +289,7 @@
           <div style="width:8px;height:8px;background:var(--lime);border-radius:50%;animation:pulse 2s infinite;"></div>
           <span style="font-size:.72rem;color:var(--lime);font-weight:700;text-transform:uppercase;letter-spacing:.1em;">Prochaine séance</span>
         </div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.9rem;font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:4px;" id="next-session-name">MERCREDI — PUSH</div>
+        <div style="font-family:'early-sans',sans-serif;font-size:1.9rem;font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:4px;" id="next-session-name">MERCREDI — PUSH</div>
         <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">Mercredi 27 mai · 12h30 · 75 min</div>
         <!-- Countdown -->
         <div style="display:flex;align-items:center;gap:6px;">
@@ -335,7 +334,7 @@
           <!-- Titre + stats — en bas -->
           <div>
             <div style="font-size:.75rem;color:var(--lime);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Pectoraux · Épaules · Triceps</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Push<br><span style="color:var(--lime);">Haut du Corps</span></div>
+            <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Push<br><span style="color:var(--lime);">Haut du Corps</span></div>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
               <div class="card-stats-bar">
                 <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>75 min</span></div>
@@ -357,7 +356,7 @@
           <div><span style="background:rgba(96,165,250,.2);color:#60A5FA;border:1px solid rgba(96,165,250,.35);border-radius:999px;padding:3px 12px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Samedi · 11h00</span></div>
           <div>
             <div style="font-size:.75rem;color:#60A5FA;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Dos · Biceps · Core</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Pull<br><span style="color:#60A5FA;">Traction &amp; Tirage</span></div>
+            <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Pull<br><span style="color:#60A5FA;">Traction &amp; Tirage</span></div>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
               <div class="card-stats-bar">
                 <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>90 min</span></div>
@@ -379,7 +378,7 @@
           <div><span style="background:rgba(167,139,250,.2);color:#A78BFA;border:1px solid rgba(167,139,250,.35);border-radius:999px;padding:3px 12px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Dimanche · 11h00</span></div>
           <div>
             <div style="font-size:.75rem;color:#A78BFA;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Quadriceps · Ischios · Mollets</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Legs<br><span style="color:#A78BFA;">Bas du Corps</span></div>
+            <div style="font-family:'early-sans',sans-serif;font-size:2rem;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:14px;">Session Legs<br><span style="color:#A78BFA;">Bas du Corps</span></div>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
               <div class="card-stats-bar">
                 <div class="stat-pill"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>90 min</span></div>
@@ -404,19 +403,19 @@
     <div style="display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;" class="hide-scroll">
       <div class="card-sm" style="padding:12px 16px;flex-shrink:0;display:flex;align-items:center;gap:8px;">
         <div style="width:10px;height:10px;background:var(--lime);border-radius:3px;flex-shrink:0;"></div>
-        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;">160g</div><div style="font-size:.7rem;color:var(--muted);">Protéines</div></div>
+        <div><div style="font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:800;">160g</div><div style="font-size:.7rem;color:var(--muted);">Protéines</div></div>
       </div>
       <div class="card-sm" style="padding:12px 16px;flex-shrink:0;display:flex;align-items:center;gap:8px;">
         <div style="width:10px;height:10px;background:#60A5FA;border-radius:3px;flex-shrink:0;"></div>
-        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;">220g</div><div style="font-size:.7rem;color:var(--muted);">Glucides</div></div>
+        <div><div style="font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:800;">220g</div><div style="font-size:.7rem;color:var(--muted);">Glucides</div></div>
       </div>
       <div class="card-sm" style="padding:12px 16px;flex-shrink:0;display:flex;align-items:center;gap:8px;">
         <div style="width:10px;height:10px;background:#A78BFA;border-radius:3px;flex-shrink:0;"></div>
-        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;">65g</div><div style="font-size:.7rem;color:var(--muted);">Lipides</div></div>
+        <div><div style="font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:800;">65g</div><div style="font-size:.7rem;color:var(--muted);">Lipides</div></div>
       </div>
       <div class="card-sm" style="padding:12px 16px;flex-shrink:0;display:flex;align-items:center;gap:8px;">
         <div style="width:10px;height:10px;background:#34D399;border-radius:3px;flex-shrink:0;"></div>
-        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;">2-3 L</div><div style="font-size:.7rem;color:var(--muted);">Eau/jour</div></div>
+        <div><div style="font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:800;">2-3 L</div><div style="font-size:.7rem;color:var(--muted);">Eau/jour</div></div>
       </div>
     </div>
     <div id="nutrition-days"></div>
@@ -473,7 +472,7 @@
 
     <!-- Liste de courses -->
     <div class="card" style="margin-top:14px;padding:20px;border-color:var(--lime-border);">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;color:var(--lime);margin-bottom:12px;text-transform:uppercase;">Courses clés — ~60-70€/sem</div>
+      <div style="font-family:'early-sans',sans-serif;font-size:1.1rem;font-weight:800;color:var(--lime);margin-bottom:12px;text-transform:uppercase;">Courses clés — ~60-70€/sem</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;">
         ${["Poulet (filets)","Œufs x18","Riz 5kg","Flocons d'avoine 1kg","Fromage blanc 0% 1kg","Thon en conserve","Légumes surgelés","Lentilles corail","Steak haché 5%","Patates douces","Pain complet","Beurre de cacahuète","Saumon surgelé","Bananes"].map(i=>`<span class="badge-dark">${i}</span>`).join('')}
       </div>
@@ -509,10 +508,10 @@
 ══════════════════════════════════════════════ -->
 <div id="rest-timer" style="display:none;">
   <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em;">Repos</div>
-  <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.5rem;font-weight:900;color:var(--lime);text-align:center;line-height:1;" id="timer-display">00:00</div>
+  <div style="font-family:'early-sans',sans-serif;font-size:2.5rem;font-weight:900;color:var(--lime);text-align:center;line-height:1;" id="timer-display">00:00</div>
   <div style="display:flex;gap:8px;margin-top:10px;">
-    <button onclick="pauseTimer()" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--text);cursor:pointer;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;">Pause</button>
-    <button onclick="stopTimer()" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--muted);cursor:pointer;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;">Stop</button>
+    <button onclick="pauseTimer()" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--text);cursor:pointer;font-size:.78rem;font-family:'early-sans',sans-serif;font-weight:700;">Pause</button>
+    <button onclick="stopTimer()" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--muted);cursor:pointer;font-size:.78rem;font-family:'early-sans',sans-serif;font-weight:700;">Stop</button>
   </div>
 </div>
 
@@ -534,7 +533,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.5" width="20" height="20"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
     </div>
     <div style="flex:1;">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;">Installer FitPro</div>
+      <div style="font-family:'early-sans',sans-serif;font-weight:800;font-size:1rem;">Installer FitPro</div>
       <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Appuie sur <strong style="color:var(--text);">Partager</strong> → <strong style="color:var(--text);">"Sur l'écran d'accueil"</strong></div>
     </div>
     <button onclick="document.getElementById('ios-banner').style.display='none';localStorage.setItem('ios-banner-dismissed','1')" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -544,7 +543,7 @@
 </div>
 <button id="install-btn" onclick="installApp()" style="display:none;position:fixed;bottom:100px;left:16px;z-index:60;background:var(--lime);border:none;border-radius:14px;padding:12px 20px;cursor:pointer;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(197,241,53,.3);">
   <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-  <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;color:#0a0a0a;">Installer l'app</span>
+  <span style="font-family:'early-sans',sans-serif;font-weight:800;font-size:1rem;color:#0a0a0a;">Installer l'app</span>
 </button>
 
 <!-- ═══════════════════════════════════════════
@@ -762,11 +761,11 @@ function openModal(key) {
       </div>
       <div style="flex:1;">
         <div style="font-size:.65rem;color:#555;text-transform:uppercase;letter-spacing:.09em;margin-bottom:2px;">Repos en cours</div>
-        <div id="modal-timer-display" style="font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;color:${s.color};line-height:1;">00:00</div>
+        <div id="modal-timer-display" style="font-family:'early-sans',sans-serif;font-size:2.2rem;font-weight:900;color:${s.color};line-height:1;">00:00</div>
       </div>
       <div style="display:flex;gap:8px;flex-shrink:0;">
-        <button id="modal-pause-btn" onclick="pauseTimer()" style="background:#242424;border:1px solid #2A2A2A;border-radius:10px;padding:8px 16px;cursor:pointer;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;">Pause</button>
-        <button onclick="stopTimer()" style="background:#242424;border:1px solid #2A2A2A;border-radius:10px;padding:8px 16px;cursor:pointer;color:#888;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;">Stop</button>
+        <button id="modal-pause-btn" onclick="pauseTimer()" style="background:#242424;border:1px solid #2A2A2A;border-radius:10px;padding:8px 16px;cursor:pointer;color:#fff;font-family:'early-sans',sans-serif;font-weight:700;font-size:.9rem;">Pause</button>
+        <button onclick="stopTimer()" style="background:#242424;border:1px solid #2A2A2A;border-radius:10px;padding:8px 16px;cursor:pointer;color:#888;font-family:'early-sans',sans-serif;font-weight:700;font-size:.9rem;">Stop</button>
       </div>
     </div>
 
@@ -774,7 +773,7 @@ function openModal(key) {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
         <div>
           <div style="font-size:.72rem;color:${s.color};font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">${s.day} · ${s.time}</div>
-          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;text-transform:uppercase;margin:0;line-height:1;">SESSION ${s.name}</h2>
+          <h2 style="font-family:'early-sans',sans-serif;font-size:2.2rem;font-weight:900;text-transform:uppercase;margin:0;line-height:1;">SESSION ${s.name}</h2>
           <div style="color:#888;margin-top:5px;font-size:.85rem;">${s.muscle}</div>
         </div>
         <button onclick="closeModal()" style="background:#242424;border:1px solid #2A2A2A;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -801,7 +800,7 @@ function openModal(key) {
               <div style="flex:1;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
                   <div style="width:22px;height:22px;background:${s.colorBg};border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <span style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:800;color:${s.color};">${i+1}</span>
+                    <span style="font-family:'early-sans',sans-serif;font-size:.8rem;font-weight:800;color:${s.color};">${i+1}</span>
                   </div>
                   <span style="font-weight:600;font-size:.92rem;">${ex.name}</span>
                 </div>
@@ -815,7 +814,7 @@ function openModal(key) {
                 style="background:${s.colorBg};border:1px solid ${s.colorBorder};border-radius:12px;padding:10px 12px;cursor:pointer;text-align:center;min-width:72px;flex-shrink:0;transition:all 200ms;"
                 onmouseover="this.style.background='${s.color}';this.querySelectorAll('div').forEach(d=>d.style.color='#0a0a0a')"
                 onmouseout="this.style.background='${s.colorBg}';this.querySelectorAll('div').forEach(d=>d.style.color='${s.color}')">
-                <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:900;color:${s.color};line-height:1;">${ex.isPlank ? '45s' : ex.rest+'s'}</div>
+                <div style="font-family:'early-sans',sans-serif;font-size:1.2rem;font-weight:900;color:${s.color};line-height:1;">${ex.isPlank ? '45s' : ex.rest+'s'}</div>
                 <div style="font-size:.6rem;color:${s.color};opacity:.8;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;">repos</div>
               </button>
             </div>
@@ -856,12 +855,12 @@ function renderNutrition() {
       <div class="nutrition-header" onclick="toggleNutrition(${i})">
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="width:46px;height:46px;background:${day.isWorkout ? 'rgba(197,241,53,.12)' : '#191919'};border:1px solid ${day.isWorkout ? 'rgba(197,241,53,.28)' : '#2A2A2A'};border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:900;color:${day.isWorkout ? '#C5F135' : '#888'};line-height:1;">${day.date.split(' ')[0]}</span>
+            <span style="font-family:'early-sans',sans-serif;font-size:1.05rem;font-weight:900;color:${day.isWorkout ? '#C5F135' : '#888'};line-height:1;">${day.date.split(' ')[0]}</span>
             <span style="font-size:.58rem;color:#555;text-transform:uppercase;">${day.date.split(' ')[1]}</span>
           </div>
           <div>
             <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
-              <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;">${day.day.toUpperCase()}</span>
+              <span style="font-family:'early-sans',sans-serif;font-size:1.05rem;font-weight:800;">${day.day.toUpperCase()}</span>
               ${day.isToday ? '<span style="background:rgba(52,211,153,.15);color:#34D399;border:1px solid rgba(52,211,153,.3);border-radius:999px;padding:1px 8px;font-size:.65rem;font-weight:700;">AUJOURD\'HUI</span>' : ''}
               ${day.isWorkout ? `<span style="background:rgba(197,241,53,.12);color:#C5F135;border:1px solid rgba(197,241,53,.28);border-radius:999px;padding:1px 8px;font-size:.65rem;font-weight:700;">${day.session}</span>` : ''}
             </div>
@@ -982,7 +981,7 @@ function renderWeightHistory(data) {
       return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
         <div style="font-size:.72rem;color:#555;min-width:88px;flex-shrink:0;">${formatDate(h.date)}</div>
         <div style="flex:1;background:#2A2A2A;border-radius:999px;height:5px;overflow:hidden;"><div style="height:5px;border-radius:999px;background:${isLatest?'var(--lime)':'#444'};width:${Math.max(barPct,4)}%;transition:width .6s;"></div></div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;color:${isLatest?'var(--lime)':'#888'};min-width:48px;text-align:right;">${h.weight}kg</div>
+        <div style="font-family:'early-sans',sans-serif;font-size:.95rem;font-weight:800;color:${isLatest?'var(--lime)':'#888'};min-width:48px;text-align:right;">${h.weight}kg</div>
         <div style="min-width:40px;text-align:right;font-size:.72rem;font-weight:700;">${diff!==null?`<span style="color:${diff<0?'#34D399':diff>0?'#fb923c':'#555'}">${diff<0?'':diff>0?'+':''}${diff!==0?diff+'kg':'='}</span>`:''}</div>
       </div>`;
     }).join('')}`;
